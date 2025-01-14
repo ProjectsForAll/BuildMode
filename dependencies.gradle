@@ -15,5 +15,6 @@ ext {
     ]
     OTHER_PLUGINS = [
             'me.clip:placeholderapi:2.11.6',
+            'com.sk89q.worldguard:worldguard-bukkit:7.0.4-SNAPSHOT',
     ]
 }

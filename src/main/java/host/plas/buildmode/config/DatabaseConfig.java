@@ -1,13 +1,13 @@
-package host.plas.exampleproject.config;
+package host.plas.buildmode.config;
 
 import host.plas.bou.sql.ConnectorSet;
 import host.plas.bou.sql.DatabaseType;
-import host.plas.exampleproject.ExampleProject;
+import host.plas.buildmode.BuildMode;
 import tv.quaint.storage.resources.flat.simple.SimpleConfiguration;
 
 public class DatabaseConfig extends SimpleConfiguration {
     public DatabaseConfig() {
-        super("database-config.yml", ExampleProject.getInstance(), false);
+        super("database-config.yml", BuildMode.getInstance(), true);
     }
 
     @Override
@@ -49,13 +49,13 @@ public class DatabaseConfig extends SimpleConfiguration {
     public String getDatabaseDatabase() {
         reloadResource();
 
-        return getOrSetDefault("database.database", "example");
+        return getOrSetDefault("database.database", "buildmode");
     }
 
     public String getDatabaseTablePrefix() {
         reloadResource();
 
-        return getOrSetDefault("database.table-prefix", "example_");
+        return getOrSetDefault("database.table-prefix", "bm_");
     }
 
     public DatabaseType getDatabaseType() {
@@ -67,7 +67,7 @@ public class DatabaseConfig extends SimpleConfiguration {
     public String getSqliteFileName() {
         reloadResource();
 
-        return getOrSetDefault("database.sqlite-file-name", "example.db");
+        return getOrSetDefault("database.sqlite-file-name", "buildmode.db");
     }
 
     public ConnectorSet getConnectorSet() {

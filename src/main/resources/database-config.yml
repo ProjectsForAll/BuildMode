@@ -1,0 +1,19 @@
+# Database configuration
+database:
+  # Password for the database
+  password: password
+  # Name of the database
+  database: buildmode
+  # SQLite file name
+  sqlite-file-name: buildmode.db
+  # Port of the database
+  port: 3306
+  # Table prefix
+  table-prefix: bm_
+  # Address of the database
+  host: localhost
+  # Type of database
+  # Supported types: MYSQL, SQLITE
+  type: SQLITE
+  # Username for the database
+  username: root

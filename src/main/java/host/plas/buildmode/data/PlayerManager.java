@@ -1,6 +1,6 @@
-package host.plas.exampleproject.data;
+package host.plas.buildmode.data;
 
-import host.plas.exampleproject.ExampleProject;
+import host.plas.buildmode.BuildMode;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
@@ -35,11 +35,11 @@ public class PlayerManager {
     }
 
     public static void savePlayer(PlayerData player) {
-        ExampleProject.getDatabase().putPlayer(player);
+        BuildMode.getDatabase().putPlayer(player);
     }
 
     public static void savePlayer(PlayerData player, boolean async) {
-        ExampleProject.getDatabase().putPlayer(player, async);
+        BuildMode.getDatabase().putPlayer(player, async);
     }
 
     public static PlayerData createPlayer(Player player) {
@@ -58,7 +58,7 @@ public class PlayerManager {
         PlayerData d = createPlayer(player);
         d.load();
 
-        d.augment(ExampleProject.getDatabase().pullPlayerThreaded(uuid));
+        d.augment(BuildMode.getDatabase().pullPlayerThreaded(uuid));
 
         return d;
     }

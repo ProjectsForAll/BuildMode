@@ -1,0 +1,23 @@
+messages:
+  toggle: "&eBuild mode has been toggled to &r%status%&8."
+  cannot-build: "&cYou cannot build in this at this location&8."
+  status:
+    enabled: "&aenabled"
+    disabled: "&cdisabled"
+  error:
+    no-permission: "&cYou do not have permission to do that&8."
+  send-cannot-build: false
+
+build:
+  permission: "buildmode.use"
+  default: false
+
+worlds:
+  is-blacklist: true
+  list:
+  - buildmode_world
+
+regions:
+  is-blacklist: true
+  list:
+  - buildmode_region

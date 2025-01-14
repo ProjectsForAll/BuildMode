@@ -9,3 +9,10 @@ folia-supported: true
 
 depend:
   - BukkitOfUtils
+
+commands:
+  build:
+    description: 'Toggle build mode'
+    permission: 'buildmode.command.build'
+    aliases:
+      - buildmode

@@ -1,17 +1,18 @@
-package host.plas.exampleproject.database;
+package host.plas.buildmode.database;
 
 import host.plas.bou.sql.DBOperator;
-import host.plas.exampleproject.ExampleProject;
-import host.plas.exampleproject.data.PlayerData;
+import host.plas.bou.sql.DatabaseType;
+import host.plas.buildmode.BuildMode;
+import host.plas.buildmode.data.PlayerData;
 import tv.quaint.async.AsyncUtils;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ExampleOperator extends DBOperator {
-    public ExampleOperator() {
-        super(ExampleProject.getDatabaseConfig().getConnectorSet(), ExampleProject.getInstance());
+public class BuildOperator extends DBOperator {
+    public BuildOperator() {
+        super(BuildMode.getDatabaseConfig().getConnectorSet(), BuildMode.getInstance());
     }
 
     @Override
@@ -42,14 +43,20 @@ public class ExampleOperator extends DBOperator {
 
     public CompletableFuture<Void> putPlayerThreaded(PlayerData playerData) {
         return AsyncUtils.executeAsync(() -> {
+            ensureUsable();
+
             String s1 = Statements.getStatement(Statements.StatementType.PUSH_PLAYER_MAIN, getConnectorSet());
 
             execute(s1, stmt -> {
                 try {
                     stmt.setString(1, playerData.getIdentifier());
-                    stmt.setString(2, playerData.getName());
+                    stmt.setBoolean(2, playerData.isToggled());
+
+                    if (getType() == DatabaseType.MYSQL) {
+                        stmt.setBoolean(3, playerData.isToggled());
+                    }
                 } catch (Throwable e) {
-                    ExampleProject.getInstance().logWarning("Failed to set values for statement: " + s1, e);
+                    BuildMode.getInstance().logWarning("Failed to set values for statement: " + s1, e);
                 }
             });
         });
@@ -57,6 +64,8 @@ public class ExampleOperator extends DBOperator {
 
     public CompletableFuture<Optional<PlayerData>> pullPlayerThreaded(String uuid) {
         return CompletableFuture.supplyAsync(() -> {
+            ensureUsable();
+
             String s1 = Statements.getStatement(Statements.StatementType.PULL_PLAYER_MAIN, getConnectorSet());
 
             AtomicReference<Optional<PlayerData>> ref = new AtomicReference<>(Optional.empty());
@@ -65,18 +74,20 @@ public class ExampleOperator extends DBOperator {
                 try {
                     stmt.setString(1, uuid);
                 } catch (Throwable e) {
-                    ExampleProject.getInstance().logWarning("Failed to set values for statement: " + s1, e);
+                    BuildMode.getInstance().logWarning("Failed to set values for statement: " + s1, e);
                 }
             }, rs -> {
                 try {
                     if (rs.next()) {
-                        String name = rs.getString("Name");
+                        boolean toggled = rs.getBoolean("Toggled");
 
-                        PlayerData playerData = new PlayerData(uuid, name);
+                        PlayerData playerData = new PlayerData(uuid);
+                        playerData.setToggled(toggled);
+
                         ref.set(Optional.of(playerData));
                     }
                 } catch (Throwable e) {
-                    ExampleProject.getInstance().logWarning("Failed to get values from result set for statement: " + s1, e);
+                    BuildMode.getInstance().logWarning("Failed to get values from result set for statement: " + s1, e);
                 }
             });
 
